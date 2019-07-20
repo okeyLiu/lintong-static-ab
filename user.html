@@ -12,7 +12,34 @@
 
 <button onclick="loginLocalStorage()">LocalStorage测试login</button>
 <button onclick="queryLocalStorage()">LocalStorage其他业务</button>
+
+<button onclick="loginLocalStorageRequestBody()">LocalStorage测试login+@RequestBody</button>
 <script>
+    /*
+    data: JSON.stringify({
+                "username": "admin",
+                "password": "1234"
+            }),
+    */
+    function loginLocalStorageRequestBody() {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:9091/user/login",
+            data: JSON.stringify({
+                "username": "admin",
+                "password": "1234"
+            }),
+            contentType: 'application/json',
+            dataType: "json",
+            success: function (jsonObj) {
+                alert(jsonObj);
+                console.log(jsonObj);
+                //本地存储LocalStorage
+                localStorage.setItem("token", jsonObj.data);
+            }
+        })
+    }
+
     function loginLocalStorage() {
         $.ajax({
             type: "POST",
