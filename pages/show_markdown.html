@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MarkDown</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../editormd/examples/css/style.css"/>
+    <link rel="stylesheet" href="../editormd/css/editormd.css"/>
+    <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon"/>
+
+</head>
+
+<body>
+    <div id="msg">
+    </div>
+
+<script src="../editormd/examples/js/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $.ajax(
+            {
+                success: function (data) {
+                    alert(data);
+                    $("#msg").html(data);
+                },
+                type: 'get',
+                url: 'http://localhost:9091/news/getMdContent'
+            }
+        );
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新闻管理系统</title>
+    <script type="application/javascript" src="js/jquery-3.2.1.js"></script>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        #box{
+            width: 100%;
+            height: 600px;
+            background-color: antiquewhite;
+        }
+        div.header{
+            width: 100%;
+            height: 10%;
+        }
+        div.header h1{
+            padding-top: 10px;
+            float: left;
+            padding-left: 20px;
+        }
+        div.header p{
+            padding-top: 20px;
+            float: right;
+            padding-right: 20px;
+        }
+        div.body{
+            width: 100%;
+            height: 90%;
+            background-color: lightskyblue;
+        }
+        div.body .menu{
+            width: 10%;
+            height: 100%;
+            background-color: beige;
+            float: left;
+            padding-left: 2%;
+        }
+        div.body .content{
+            width: 88%;
+            height: 100%;
+            background-color: darkkhaki;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <div class="header">
+        <h1>新闻管理系统</h1>
+        <p>当前用户：admin，<a href="javascript:;">退出</a></p>
+    </div>
+    <div class="body">
+        <div class="menu">
+            <ul>
+                <li><a href="javascript:;" onclick="getNewsList(this)">查看新闻列表</a></li>
+                <li><a href="javascript:;">编辑新闻</a></li>
+                <li><a href="javascript:;">添加新闻</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            content...
+        </div>
+    </div>
+</div>
+
+<script>
+
+    /**
+     * 获取新闻列表
+     * @param a
+     */
+    function getNewsList(a){
+        //清除样式
+        $("a").css("color","blue");
+        $(a).css("color","red");
+        //发送ajax请求
+        var url = "http://localhost:8080/news-web-servlet/news/list.do";
+        $.get(url,function (response) {
+            var template = '<table border="1" cellspacing="0" width="90%" align="center">\n' +
+                '    <caption>#TABLE_INFO#</caption>\n' +
+                '    <tr>\n' +
+                '        <th>ID</th>\n' +
+                '        <th>TITLE</th>\n' +
+                '        <th>CONTENT</th>\n' +
+                '        <th>PUBLISH_TIME</th>\n' +
+                '    </tr>';
+            $.each(response.data,function (index,news) {
+                var row = '<tr>\n' +
+                    '        <td>#ID#</td>\n' +
+                    '        <td>#TITLE#</td>\n' +
+                    '        <td>#CONTENT#</td>\n' +
+                    '        <td>#PUBLISH_TIME#</td>\n' +
+                    '    </tr>'
+                row = row.replace("#ID#",news.id);
+                row = row.replace("#TITLE#",news.title);
+                row = row.replace("#CONTENT#",news.content);
+                row = row.replace("#PUBLISH_TIME#",news.publishTime);
+                template += row;
+            })
+            template += "</table>";
+            template = template.replace("#TABLE_INFO#","新闻列表");
+            //显示
+            $("div.content").html(template);
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-3.2.1.js"></script>
+</head>
+<body>
+
+<button onclick="login()">测试login</button>
+<button onclick="query()">其他业务</button>
+
+<button onclick="loginLocalStorage()">LocalStorage测试login</button>
+<button onclick="queryLocalStorage()">LocalStorage其他业务</button>
+<script>
+    function loginLocalStorage() {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:9091/user/login",
+            data: {
+                username: "admin",
+                password: "1234"
+            },
+            dataType: "json",
+            success: function (jsonObj) {
+                alert(jsonObj);
+                console.log(jsonObj);
+                //本地存储LocalStorage
+                localStorage.setItem("token", jsonObj.data);
+            }
+        })
+    }
+
+    function queryLocalStorage() {
+        $.get("http://localhost:9091/user/current",
+            {
+                key: "Bearer " + localStorage.getItem("token"),
+                token: localStorage.getItem("token")
+            },
+            function (data) {
+                alert("login->" + data.data);
+            })
+    }
+
+    function login() {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:9091/user/login",
+            data: {
+                username: "admin",
+                password: "1234"
+            },
+            dataType: "json",
+            success: function (jsonObj) {
+                alert(jsonObj);
+                console.log(jsonObj);
+                //cookie
+                addCookie("token", jsonObj.data, 1);
+            }
+        })
+    }
+
+    function query() {
+        $.get("http://localhost:9091/user/current",
+            {
+                key: "Bearer " + getCookie("token"),
+                token: getCookie("token")
+            },
+            function (data) {
+                alert("login->" + data.data);
+            })
+    }
+
+    /**
+     * 添加cookie
+     * @param objName
+     * @param objValue
+     * @param objHours
+     */
+    function addCookie(objName, objValue, objHours) {//添加cookie
+        var str = objName + "=" + escape(objValue);
+        if (objHours > 0) {//为0时不设定过期时间，浏览器关闭时cookie自动消失
+            var date = new Date();
+            var ms = 24 * 60 * 60 * 1000; //自己设置cookie时间
+            date.setTime(date.getTime() + ms); //注意为毫秒值
+            str += "; expires=" + date.toGMTString();
+        }
+        document.cookie = str;
+    }
+
+    /**
+     * 查找cookie
+     * @param objName
+     * @returns {string}
+     */
+    function getCookie(objName) {//获取指定名称的cookie的值
+        var arrStr = document.cookie.split("; ");
+        for (var i = 0; i < arrStr.length; i++) {
+            var temp = arrStr[i].split("=");
+            if (temp[0] == objName) return unescape(temp[1]);
+        }
+    }
+
+
+</script>
+
+
+</body>
+</html>
